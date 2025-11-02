@@ -62,7 +62,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_PWD }}
-
+      - name: Set Go Proxy
+        run: echo "GOPROXY=https://proxy.golang.org,direct" >> $GITHUB_ENV
       - name: Build the Docker image
         working-directory: ${{ github.workspace }}/siyuan-note/siyuan
         run: |
