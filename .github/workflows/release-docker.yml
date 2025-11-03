@@ -20,12 +20,7 @@ jobs:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
-          # this might remove tools that are actually needed,
-          # if set to "true" but frees about 6 GB
           tool-cache: false
-
-          # all of these default to true, but feel free to set to
-          # "false" if necessary for your workflow
           android: true
           dotnet: true
           haskell: true
@@ -61,12 +56,14 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_PWD }}
-      - name: Set Go Proxy
-        run: echo "GOPROXY=https://proxy.golang.org,direct" >> $GITHUB_ENV
-      - name: Build the Docker image
+          password: ${{ secrets.DOCKER_HUB_USER_PWD }}
+
+      - name: Build the Docker image with Go proxy
         working-directory: ${{ github.workspace }}/siyuan-note/siyuan
         run: |
-          docker buildx build --push --platform linux/amd64,linux/arm64 -t ${{ env.DOCKER_HUB_USER }}/siyuan:latest -t ${{ env.DOCKER_HUB_USER }}/siyuan:${{ github.event.inputs.version }} .
-        env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          docker buildx build \
+            --push \
+            --platform linux/amd64,linux/arm64 \
+            --build-arg GOPROXY=https://goproxy.cn,direct \
+            -t ${{ secrets.DOCKER_HUB_USER }}/siyuan:latest \
+            -t ${{ secrets.DOCKER_HUB_USER }}/siyuan:${{ github.event.inputs.version }} .
