@@ -56,7 +56,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_USER_PWD }}
+          password: ${{ secrets.DOCKER_HUB_PWD }}
 
       - name: Build the Docker image with Go proxy
         working-directory: ${{ github.workspace }}/siyuan-note/siyuan
